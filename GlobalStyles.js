@@ -237,3 +237,15 @@ export const LinkStyles = theme =>
   StyleSheet.create({
     Link: { style: { color: theme.colors.branding.primary }, props: {} },
   });
+
+export const SquareStyles = theme =>
+  StyleSheet.create({
+    Square: {
+      style: {
+        alignItems: 'center',
+        backgroundColor: theme.colors.branding.primary,
+        justifyContent: 'center',
+      },
+      props: {},
+    },
+  });

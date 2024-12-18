@@ -1,20 +1,20 @@
 import React from 'react';
-import { ScreenContainer, SimpleStyleFlashList, withTheme } from '@draftbit/ui';
+import { ScreenContainer, SimpleStyleFlatList, withTheme } from '@draftbit/ui';
 import { useIsFocused } from '@react-navigation/native';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Fetch } from 'react-request';
 import * as GlobalStyles from '../GlobalStyles.js';
 import * as SquareApi from '../apis/SquareApi.js';
+import * as SquareOrders from '../custom-files/SquareOrders';
 import palettes from '../themes/palettes';
+import * as Utils from '../utils';
 import Breakpoints from '../utils/Breakpoints';
 import * as StyleSheet from '../utils/StyleSheet';
-import useIsOnline from '../utils/useIsOnline';
 import useWindowDimensions from '../utils/useWindowDimensions';
 
 const OrdersScreen = props => {
   const { theme } = props;
   const dimensions = useWindowDimensions();
-  const isOnline = useIsOnline();
 
   return (
     <ScreenContainer
@@ -52,10 +52,7 @@ const OrdersScreen = props => {
         {'Orders\n'}
       </Text>
 
-      <SquareApi.FetchSearchPOST
-        refetchInterval={5000}
-        refetchOnReconnect={isOnline}
-      >
+      <SquareApi.FetchSearchPOST>
         {({ loading, error, data, refetchSearch }) => {
           const fetchData = data?.json;
           if (loading) {
@@ -67,27 +64,39 @@ const OrdersScreen = props => {
           }
 
           return (
-            <SimpleStyleFlashList
-              data={fetchData?.orders?.[0]?.line_items}
+            <SimpleStyleFlatList
+              data={fetchData?.orders}
               horizontal={false}
               inverted={false}
-              keyExtractor={(flashListData, index) =>
-                flashListData?.id ??
-                flashListData?.uuid ??
+              keyExtractor={(listData, index) =>
+                listData?.id ??
+                listData?.uuid ??
                 index?.toString() ??
-                JSON.stringify(flashListData)
+                JSON.stringify(listData)
               }
-              listKey={'IYL2m1al'}
+              keyboardShouldPersistTaps={'never'}
+              listKey={'I02YKWqa'}
+              nestedScrollEnabled={false}
+              numColumns={1}
               onEndReachedThreshold={0.5}
               renderItem={({ item, index }) => {
-                const flashListData = item;
-                return <>{!flashListData ? null : <View></View>}</>;
+                const listData = item;
+                return (
+                  <Text
+                    accessible={true}
+                    selectable={false}
+                    {...GlobalStyles.TextStyles(theme)['Text'].props}
+                    style={StyleSheet.applyWidth(
+                      GlobalStyles.TextStyles(theme)['Text'].style,
+                      dimensions.width
+                    )}
+                  >
+                    {listData?.id}
+                  </Text>
+                );
               }}
               showsHorizontalScrollIndicator={true}
               showsVerticalScrollIndicator={true}
-              estimatedItemSize={25}
-              initialNumToRender={20}
-              numColumns={fetchData}
             />
           );
         }}

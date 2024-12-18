@@ -34,7 +34,7 @@ export const searchPOST = async (Constants, _args, handlers = {}) => {
           },
         },
       },
-      limit: 25,
+      limit: 3,
     }),
     headers: cleanHeaders({
       Accept: 'application/json',
